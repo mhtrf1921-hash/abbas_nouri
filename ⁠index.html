@@ -1,32 +1,492 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر التطبيقات - Zsign</title>
     <style>
-        body { background-color: #0b0e14; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .card { background: #1c212e; padding: 15px; border-radius: 15px; text-align: center; }
-        .icon { width: 60px; height: 60px; background: #3b82f6; border-radius: 15px; margin: 0 auto 10px; }
-        .btn { display: block; background: #2d3748; color: white; text-decoration: none; padding: 8px; border-radius: 20px; margin-top: 10px; font-size: 12px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', 'Segoe UI', system-ui, sans-serif;
+            background: #f2f2f6;
+            color: #1c1c1e;
+        }
+
+        /* الحاوية الرئيسية */
+        .app-container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        /* الشريط الجانبي الأيمن */
+        .sidebar {
+            width: 260px;
+            background: #ffffff;
+            border-left: 1px solid #e5e5ea;
+            padding: 24px 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            padding: 0 20px 24px 20px;
+            color: #007aff;
+            border-bottom: 1px solid #e5e5ea;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+        }
+
+        .sidebar nav li {
+            padding: 12px 20px;
+            margin: 4px 12px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            color: #3a3a3c;
+        }
+
+        .sidebar nav li:hover {
+            background: #f2f2f6;
+            color: #007aff;
+        }
+
+        .sidebar nav li.active {
+            background: #007aff10;
+            color: #007aff;
+            font-weight: 600;
+        }
+
+        /* المحتوى الرئيسي */
+        .main-content {
+            flex: 1;
+            padding: 24px 28px;
+            background: #f8f8fc;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 28px 0 16px 0;
+            color: #1c1c1e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        /* شبكة التطبيقات */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 14px;
+            margin-bottom: 32px;
+        }
+
+        /* بطاقة التطبيق */
+        .app-card {
+            background: white;
+            border-radius: 20px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #e9e9ef;
+            transition: all 0.2s;
+            backdrop-filter: blur(0px);
+        }
+
+        .app-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            border-color: #007aff30;
+        }
+
+        .app-info h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #1c1c1e;
+        }
+
+        .rating {
+            font-size: 13px;
+            color: #ff9f0a;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .download-btn {
+            background: #007aff;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        .download-btn:hover {
+            background: #005fc1;
+            transform: scale(0.96);
+        }
+
+        /* الشريط السفلي */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #e5e5ea;
+            max-width: 1200px;
+            margin: 0 auto;
+            z-index: 100;
+        }
+
+        .bottom-nav button {
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            padding: 8px 20px;
+            color: #8e8e93;
+            cursor: pointer;
+            font-family: inherit;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+
+        .bottom-nav button.active {
+            color: #007aff;
+            background: #007aff10;
+        }
+
+        /* رسالة التنبيه */
+        .toast-msg {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1c1c1e;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-size: 14px;
+            z-index: 200;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .main-content {
+                padding: 16px;
+            }
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
+            .bottom-nav button {
+                font-size: 13px;
+                padding: 6px 12px;
+            }
+            .section-title {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .bottom-nav button {
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+        }
     </style>
 </head>
 <body>
-
-    <h2 style="text-align: center;">متجر التطبيقات</h2>
-
-    <div class="grid">
-        <div class="card">
-            <div class="icon"></div>
-            <p>اسم التطبيق 1</p>
-            <a href="#" class="btn">تنزيل</a>
+    <div class="app-container">
+        <!-- شريط جانبي -->
+        <div class="sidebar">
+            <div class="logo">Zsign</div>
+            <nav>
+                <ul>
+                    <li data-category="games">🎮 الألعاب</li>
+                    <li data-category="movies">🎬 أفلام ومسلسلات</li>
+                    <li data-category="social" class="active">💬 تواصل اجتماعي</li>
+                    <li data-category="all">📱 الكل</li>
+                    <li data-category="design">🎨 التصميم والمونتاج</li>
+                    <li data-category="other">✨ غير ذلك</li>
+                    <li data-category="lifestyle">🌿 نمط الحياة</li>
+                    <li data-category="dev">⚙️ مطور</li>
+                </ul>
+            </nav>
         </div>
-        <div class="card">
-            <div class="icon"></div>
-            <p>اسم التطبيق 2</p>
-            <a href="#" class="btn">تنزيل</a>
+
+        <!-- المحتوى -->
+        <div class="main-content" id="mainContent">
+            <!-- سيتم تعبئته بواسطة الجافاسكريبت -->
+        </div>
+
+        <!-- شريط سفلي -->
+        <div class="bottom-nav">
+            <button data-tab="settings">⚙️ الإعدادات</button>
+            <button data-tab="downloads">📥 التنزيلات</button>
+            <button data-tab="sign">✍️ التوقيع</button>
+            <button data-tab="apps">📦 التطبيقات</button>
+            <button data-tab="home" class="active">🏠 الرئيسية</button>
         </div>
     </div>
+    <div id="toastMsg" class="toast-msg"></div>
 
+    <script>
+        // ------------- البيانات الكاملة مثل الصورة -------------
+        const APPS_DB = {
+            social: [
+                { name: "Regram", rating: "4.4", link: "#" },
+                { name: "WhatsApp", rating: "4.8", link: "#" },
+                { name: "Beegram", rating: "4.0", link: "#" },
+                { name: "Snapchat", rating: "4.7", link: "#" }
+            ],
+            movies: [
+                { name: "Anime Slayer ipasoon", rating: "5.0", link: "#" },
+                { name: "Bawa", rating: "4.7", link: "#" },
+                { name: "Buzz TV", rating: "4.3", link: "#" }
+            ],
+            games: [
+                { name: "PUBG Mobile", rating: "4.9", link: "#" },
+                { name: "Call of Duty", rating: "4.8", link: "#" },
+                { name: "Among Us", rating: "4.5", link: "#" }
+            ],
+            design: [
+                { name: "CapCut", rating: "4.8", link: "#" },
+                { name: "Adobe Lightroom", rating: "4.7", link: "#" }
+            ],
+            other: [
+                { name: "VPN Express", rating: "4.6", link: "#" },
+                { name: "Clean Master", rating: "4.2", link: "#" }
+            ],
+            lifestyle: [
+                { name: "MyFitnessPal", rating: "4.6", link: "#" },
+                { name: "Headspace", rating: "4.8", link: "#" }
+            ],
+            dev: [
+                { name: "Pythonista", rating: "4.7", link: "#" },
+                { name: "CodeHub", rating: "4.5", link: "#" }
+            ]
+        };
+
+        let currentCategory = "social"; // الافتراضي مثل الصورة
+
+        // دالة عرض رسالة
+        function showMessage(text) {
+            const toast = document.getElementById("toastMsg");
+            toast.textContent = text;
+            toast.style.opacity = "1";
+            setTimeout(() => {
+                toast.style.opacity = "0";
+            }, 1800);
+        }
+
+        // إنشاء بطاقة التطبيق
+        function createAppCard(app) {
+            const card = document.createElement("div");
+            card.className = "app-card";
+            card.innerHTML = `
+                <div class="app-info">
+                    <h3>${escapeHtml(app.name)}</h3>
+                    <div class="rating">★ ${app.rating}</div>
+                </div>
+                <button class="download-btn" data-url="${app.link}">تنزيل</button>
+            `;
+            const btn = card.querySelector(".download-btn");
+            btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                showMessage(`✅ جاري تحميل ${app.name} ... ( تجريبي )`);
+                // لو تبي رابط حقيقي حط window.location.href = app.link
+                if(app.link && app.link !== "#") {
+                    // window.location.href = app.link;
+                }
+            });
+            return card;
+        }
+
+        // دالة أمان
+        function escapeHtml(str) {
+            return str.replace(/[&<>]/g, function(m) {
+                if(m === '&') return '&amp;';
+                if(m === '<') return '&lt;';
+                if(m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // عرض المحتوى حسب القسم المختار (social / movies / games ...)
+        function renderCurrentCategory() {
+            const container = document.getElementById("mainContent");
+            if (!container) return;
+            
+            // حالات خاصة: "الكل" يعرض كل التطبيقات دفعة واحدة
+            if (currentCategory === "all") {
+                let allAppsHtml = `<div style="margin-bottom: 10px;"><h2 class="section-title">📱 جميع التطبيقات</h2></div>`;
+                const sectionsOrder = ["social", "movies", "games", "design", "other", "lifestyle", "dev"];
+                for (let cat of sectionsOrder) {
+                    const apps = APPS_DB[cat];
+                    if (apps && apps.length) {
+                        let catName = "";
+                        if(cat === "social") catName = "💬 تواصل اجتماعي";
+                        else if(cat === "movies") catName = "🎬 أفلام ومسلسلات";
+                        else if(cat === "games") catName = "🎮 الألعاب";
+                        else if(cat === "design") catName = "🎨 التصميم والمونتاج";
+                        else if(cat === "other") catName = "✨ غير ذلك";
+                        else if(cat === "lifestyle") catName = "🌿 نمط الحياة";
+                        else if(cat === "dev") catName = "⚙️ مطور";
+                        else catName = cat;
+                        
+                        allAppsHtml += `<div class="section-title">${catName}</div><div class="apps-grid" id="grid-${cat}"></div>`;
+                    }
+                }
+                container.innerHTML = allAppsHtml;
+                
+                // إعادة ملء كل grid بالبطاقات
+                for (let cat of sectionsOrder) {
+                    const apps = APPS_DB[cat];
+                    const gridElement = document.getElementById(`grid-${cat}`);
+                    if (gridElement && apps) {
+                        gridElement.innerHTML = "";
+                        apps.forEach(app => {
+                            gridElement.appendChild(createAppCard(app));
+                        });
+                    }
+                }
+                return;
+            }
+            
+            // عرض قسم واحد فقط (مثل social / movies / games / design / other / lifestyle / dev)
+            let sectionTitle = "";
+            let appsArray = [];
+            
+            if (currentCategory === "social") { sectionTitle = "💬 تواصل اجتماعي"; appsArray = APPS_DB.social; }
+            else if (currentCategory === "movies") { sectionTitle = "🎬 أفلام ومسلسلات"; appsArray = APPS_DB.movies; }
+            else if (currentCategory === "games") { sectionTitle = "🎮 الألعاب"; appsArray = APPS_DB.games; }
+            else if (currentCategory === "design") { sectionTitle = "🎨 التصميم والمونتاج"; appsArray = APPS_DB.design; }
+            else if (currentCategory === "other") { sectionTitle = "✨ غير ذلك"; appsArray = APPS_DB.other; }
+            else if (currentCategory === "lifestyle") { sectionTitle = "🌿 نمط الحياة"; appsArray = APPS_DB.lifestyle; }
+            else if (currentCategory === "dev") { sectionTitle = "⚙️ مطور"; appsArray = APPS_DB.dev; }
+            else { sectionTitle = "📱 تطبيقات"; appsArray = []; }
+            
+            container.innerHTML = `
+                <div class="section-title">${sectionTitle}</div>
+                <div class="apps-grid" id="dynamicGrid"></div>
+            `;
+            const gridDiv = document.getElementById("dynamicGrid");
+            if (gridDiv && appsArray.length) {
+                appsArray.forEach(app => {
+                    gridDiv.appendChild(createAppCard(app));
+                });
+            } else if (gridDiv) {
+                gridDiv.innerHTML = "<p style='padding:20px;text-align:center;'>🚫 لا توجد تطبيقات في هذا القسم حالياً</p>";
+            }
+        }
+
+        // التبديل بين الأزرار السفلية (وظائف تنبيهية)
+        function setupBottomNav() {
+            const bottomBtns = document.querySelectorAll(".bottom-nav button");
+            bottomBtns.forEach(btn => {
+                btn.addEventListener("click", function() {
+                    const tab = this.getAttribute("data-tab");
+                    bottomBtns.forEach(b => b.classList.remove("active"));
+                    this.classList.add("active");
+                    
+                    if(tab === "home") {
+                        currentCategory = "social";
+                        updateActiveSidebar("social");
+                        renderCurrentCategory();
+                        showMessage("🏠 الرئـيسية - تواصل اجتماعي");
+                    } 
+                    else if(tab === "settings") showMessage("⚙️ الإعدادات : قريباً يمكنك تعديل الإعدادات");
+                    else if(tab === "downloads") showMessage("📥 صفحة التنزيلات : تطبيقاتك التي حملتها");
+                    else if(tab === "sign") showMessage("✍️ التوقيع : سيتم توقيع التطبيقات قريباً");
+                    else if(tab === "apps") showMessage("📦 جميع التطبيقات : تصفح الأقسام");
+                });
+            });
+        }
+
+        // تحديث النشاط في القائمة الجانبية
+        function updateActiveSidebar(category) {
+            const allSideLi = document.querySelectorAll(".sidebar nav li");
+            allSideLi.forEach(li => {
+                const catAttr = li.getAttribute("data-category");
+                if(catAttr === category) {
+                    li.classList.add("active");
+                } else {
+                    li.classList.remove("active");
+                }
+            });
+        }
+
+        // حدث القائمة الجانبية
+        function setupSidebar() {
+            const sideItems = document.querySelectorAll(".sidebar nav li");
+            sideItems.forEach(item => {
+                item.addEventListener("click", function() {
+                    const category = this.getAttribute("data-category");
+                    if(category) {
+                        currentCategory = category;
+                        updateActiveSidebar(category);
+                        renderCurrentCategory();
+                        // أيضًا إلغاء تنشيط تبويب الرئيسية في الشريط السفلي لأننا داخلياً غيرنا القسم
+                        const homeBtn = document.querySelector('.bottom-nav button[data-tab="home"]');
+                        if(homeBtn) {
+                            document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
+                            homeBtn.classList.add("active");
+                        }
+                        showMessage(`📂 القسم: ${this.innerText}`);
+                    }
+                });
+            });
+        }
+
+        // بدء التشغيل
+        function init() {
+            renderCurrentCategory();
+            setupSidebar();
+            setupBottomNav();
+        }
+
+        init();
+    </script>
 </body>
 </html>
