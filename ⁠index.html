@@ -3,22 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عباس نوري</title>
     <style>
-        body { background-color: #000; color: #fff; font-family: sans-serif; text-align: center; padding-top: 50px; }
-        .container { max-width: 400px; margin: auto; padding: 20px; }
-        .app-icon { font-size: 50px; margin-bottom: 20px; }
-        h1 { font-size: 32px; }
-        p { color: #888; margin-bottom: 30px; }
-        .btn { display: inline-block; background-color: #007AFF; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+        body { background-color: #0b0e14; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .card { background: #1c212e; padding: 15px; border-radius: 15px; text-align: center; }
+        .icon { width: 60px; height: 60px; background: #3b82f6; border-radius: 15px; margin: 0 auto 10px; }
+        .btn { display: block; background: #2d3748; color: white; text-decoration: none; padding: 8px; border-radius: 20px; margin-top: 10px; font-size: 12px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="app-icon">👤</div>
-        <h1>عباس نوري</h1>
-        <p>أهلاً بكم في موقعي الشخصي</p>
-        <a href="#" class="btn">تواصل معي</a>
+
+    <h2 style="text-align: center;">متجر التطبيقات</h2>
+
+    <div class="grid">
+        <div class="card">
+            <div class="icon"></div>
+            <p>اسم التطبيق 1</p>
+            <a href="#" class="btn">تنزيل</a>
+        </div>
+        <div class="card">
+            <div class="icon"></div>
+            <p>اسم التطبيق 2</p>
+            <a href="#" class="btn">تنزيل</a>
+        </div>
     </div>
+
 </body>
 </html>
